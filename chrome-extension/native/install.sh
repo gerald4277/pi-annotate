@@ -9,7 +9,19 @@ if [ -z "$EXTENSION_ID" ]; then
 fi
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-HOST_SCRIPT="$SCRIPT_DIR/host.cjs"
+
+# Install the native host OUTSIDE the repo. macOS protects ~/Documents, ~/Desktop,
+# and ~/Downloads with TCC, and Chrome's native-host launcher cannot exec a binary
+# under those paths (it dies instantly with "Native host has exited"). Copy the host
+# into a non-protected per-user location instead.
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  HOST_INSTALL_DIR="$HOME/Library/Application Support/claude-annotate-host"
+else
+  HOST_INSTALL_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/claude-annotate-host"
+fi
+mkdir -p "$HOST_INSTALL_DIR"
+cp "$SCRIPT_DIR/host.cjs" "$HOST_INSTALL_DIR/host.cjs"
+HOST_SCRIPT="$HOST_INSTALL_DIR/host.cjs"
 
 # Find node path (Chrome may not have node in PATH when launched from Dock)
 NODE_PATH=$(which node 2>/dev/null || echo "")
@@ -31,7 +43,7 @@ fi
 echo "Using node at: $NODE_PATH"
 
 # Create wrapper script with absolute node path (Chrome's PATH doesn't include homebrew)
-HOST_PATH="$SCRIPT_DIR/host-wrapper.sh"
+HOST_PATH="$HOST_INSTALL_DIR/host-wrapper.sh"
 cat > "$HOST_PATH" << EOF
 #!/bin/bash
 exec "$NODE_PATH" "$HOST_SCRIPT" "\$@"
