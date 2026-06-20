@@ -20,7 +20,7 @@ export interface Harness {
 
 export function startStubHost(): Promise<Harness> {
   return new Promise((resolve) => {
-    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "pi-annotate-sock-"));
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "claude-annotate-sock-"));
     const socketPath = path.join(dir, "host.sock");
     const tokenPath = path.join(dir, "host.token");
     fs.writeFileSync(tokenPath, TOKEN + "\n");

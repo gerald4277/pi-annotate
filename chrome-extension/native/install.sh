@@ -58,10 +58,10 @@ fi
 for MANIFEST_DIR in "${MANIFEST_DIRS[@]}"; do
   mkdir -p "$MANIFEST_DIR"
 
-  cat > "$MANIFEST_DIR/com.pi.annotate.json" << EOF
+  cat > "$MANIFEST_DIR/com.claude.annotate.json" << EOF
 {
-  "name": "com.pi.annotate",
-  "description": "Pi Annotate native messaging host",
+  "name": "com.claude.annotate",
+  "description": "Claude Annotate native messaging host",
   "path": "$HOST_PATH",
   "type": "stdio",
   "allowed_origins": [
@@ -70,7 +70,7 @@ for MANIFEST_DIR in "${MANIFEST_DIRS[@]}"; do
 }
 EOF
 
-  echo "Installed native host manifest to: $MANIFEST_DIR/com.pi.annotate.json"
+  echo "Installed native host manifest to: $MANIFEST_DIR/com.claude.annotate.json"
 done
 
 echo "Fully quit and reopen the browser you loaded the extension in."

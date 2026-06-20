@@ -25,7 +25,7 @@ function cancelled(reason: string): AnnotationResult {
 }
 
 /**
- * Client side of the pi-annotate Unix-socket protocol. A drop-in replacement
+ * Client side of the claude-annotate Unix-socket protocol. A drop-in replacement
  * for the Pi layer in the original index.ts: connects to the native host's
  * socket, authenticates, and dispatches newline-delimited JSON messages to
  * per-requestId resolvers.
@@ -40,7 +40,7 @@ export class HostSocket {
 
   constructor(opts: HostSocketOptions) {
     this.opts = opts;
-    this.log = opts.log ?? ((m) => process.stderr.write(`[pi-annotate] ${m}\n`));
+    this.log = opts.log ?? ((m) => process.stderr.write(`[claude-annotate] ${m}\n`));
   }
 
   connect(): Promise<void> {

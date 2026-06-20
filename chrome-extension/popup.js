@@ -1,4 +1,4 @@
-// Pi Annotate - Popup Script
+// Claude Annotate - Popup Script
 
 const extId = chrome.runtime.id;
 const installCmd = `./install.sh ${extId}`;

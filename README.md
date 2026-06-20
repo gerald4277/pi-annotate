@@ -1,8 +1,8 @@
 <p>
-  <img src="banner.png" alt="Pi Annotate" width="1100">
+  <img src="banner.png" alt="Claude Annotate" width="1100">
 </p>
 
-# Pi Annotate
+# Claude Annotate
 
 **Visual annotation for AI. Click elements, capture screenshots, fix code.**
 
@@ -19,7 +19,7 @@ Click elements, add comments, submit. The agent gets selectors, box model, acces
 
 https://github.com/user-attachments/assets/115b10ca-86e8-4b1c-b8a4-492c68759c58
 
-> **Fork note — Claude Code support.** This fork adds an MCP server in [`server/`](server/) that brings the same annotation workflow to **[Claude Code](https://claude.com/claude-code)**. The Chrome extension and native host are reused unchanged — only the agent layer differs. Upstream: [nicobailon/pi-annotate](https://github.com/nicobailon/pi-annotate).
+> **Fork note — Claude Code support.** This fork adds an MCP server in [`server/`](server/) that brings the same annotation workflow to **[Claude Code](https://claude.com/claude-code)**. The Chrome extension and native host are reused unchanged — only the agent layer differs. Upstream: [nicobailon/claude-annotate](https://github.com/nicobailon/claude-annotate).
 
 ## Claude Code (MCP)
 
@@ -28,7 +28,7 @@ cd server
 npm install && npm run build
 # Load chrome-extension/ in Chrome (Developer Mode), note the extension ID, then:
 ( cd ../chrome-extension/native && ./install.sh <extension-id> )   # restart browser
-claude mcp add pi-annotate -- node "$PWD/dist/index.js"            # restart Claude Code
+claude mcp add claude-annotate -- node "$PWD/dist/index.js"            # restart Claude Code
 ```
 
 Then ask Claude to **annotate** a page — it calls the `annotate` tool, you click/comment in the browser, and Claude receives selectors, box model, accessibility, your comments, and screenshots (returned both inline and as temp files). Default wait is 600s. Full setup, config, and tests: **[server/README.md](server/README.md)**.
@@ -38,7 +38,7 @@ Then ask Claude to **annotate** a page — it calls the `annotate` tool, you cli
 ### 1. Install Pi Extension
 
 ```bash
-pi install npm:pi-annotate
+pi install npm:claude-annotate
 ```
 
 Restart pi to load the extension.
@@ -47,7 +47,7 @@ Restart pi to load the extension.
 
 1. Open the extensions page in Google Chrome, Google Chrome for Testing, or Chromium, and enable **Developer mode**
 2. Click **Load unpacked** → select the `chrome-extension/` folder inside the installed package
-3. Click the **Pi Annotate icon** in the toolbar
+3. Click the **Claude Annotate icon** in the toolbar
 
 ### 3. Install Native Host
 
@@ -124,8 +124,8 @@ This installs the native messaging manifest for Google Chrome, Google Chrome for
 
 ### Screenshots
 
-- Element 1: /var/folders/.../pi-annotate-...-el1.png
-- Element 2: /var/folders/.../pi-annotate-...-el2.png
+- Element 1: /var/folders/.../claude-annotate-...-el1.png
+- Element 2: /var/folders/.../claude-annotate-...-el2.png
 
 ## Edit Capture (2 changes, 35s)
 
@@ -142,8 +142,8 @@ This installs the native messaging manifest for Google Chrome, Google Chrome for
 
 ### Before/After Screenshots
 
-- Before: /var/folders/.../pi-annotate-...-before.png
-- After: /var/folders/.../pi-annotate-...-after.png
+- Before: /var/folders/.../claude-annotate-...-before.png
+- After: /var/folders/.../claude-annotate-...-after.png
 ```
 
 Debug mode adds computed styles, parent context, and CSS variables per element. Edit capture appears when the Etch toggle is enabled and changes are detected.
@@ -152,7 +152,7 @@ Debug mode adds computed styles, parent context, and CSS variables per element. 
 
 ```
 Pi Extension (index.ts)
-    ↕ Unix Socket (/tmp/pi-annotate.sock)
+    ↕ Unix Socket (/tmp/claude-annotate.sock)
 Native Host (host.cjs)
     ↕ Browser Native Messaging
 Browser Extension (background.js → content.js)
@@ -167,7 +167,7 @@ Browser Extension (background.js → content.js)
 | `chrome-extension/native/host.cjs` | Socket ↔ native messaging bridge |
 | `chrome-extension/popup.html` | Connection status + setup |
 
-Auth token generated per-run at `/tmp/pi-annotate.token`. Socket and token files use 0600 permissions.
+Auth token generated per-run at `/tmp/claude-annotate.token`. Socket and token files use 0600 permissions.
 
 **Claude Code variant:** the [`server/`](server/) MCP server replaces the Pi extension at the top of this stack — it speaks the same Unix-socket protocol to the unchanged native host, so the bottom two layers are identical. See [server/README.md](server/README.md).
 
@@ -176,8 +176,8 @@ Auth token generated per-run at `/tmp/pi-annotate.token`. Socket and token files
 No build step. Edit `content.js` or `background.js` directly, reload at `chrome://extensions`. Pi extension (TypeScript) loads via jiti — restart pi after changes.
 
 ```bash
-tail -f /tmp/pi-annotate-host.log                    # Native host logs
-# chrome://extensions → Pi Annotate → service worker  # Background logs
+tail -f /tmp/claude-annotate-host.log                    # Native host logs
+# chrome://extensions → Claude Annotate → service worker  # Background logs
 # DevTools on target page                              # Content script logs
 ```
 
@@ -189,15 +189,15 @@ tail -f /tmp/pi-annotate-host.log                    # Native host logs
 | "restricted URL" error | Provide a URL: `/annotate https://example.com` |
 | Native host not connecting | Click extension icon → check status, re-run install, fully restart the supported browser |
 | "Extension ID mismatch" | Copy install command from popup, re-run |
-| Socket errors | `ls -la /tmp/pi-annotate.sock` |
+| Socket errors | `ls -la /tmp/claude-annotate.sock` |
 
 **Verify native host:**
-- macOS Google Chrome: `cat ~/Library/Application\ Support/Google/Chrome/NativeMessagingHosts/com.pi.annotate.json`
-- macOS Google Chrome for Testing: `cat ~/Library/Application\ Support/Google/ChromeForTesting/NativeMessagingHosts/com.pi.annotate.json`
-- macOS Chromium: `cat ~/Library/Application\ Support/Chromium/NativeMessagingHosts/com.pi.annotate.json`
-- Linux Google Chrome (default path): `cat ~/.config/google-chrome/NativeMessagingHosts/com.pi.annotate.json`
-- Linux Google Chrome for Testing (default path): `cat ~/.config/google-chrome-for-testing/NativeMessagingHosts/com.pi.annotate.json`
-- Linux Chromium (default path): `cat ~/.config/chromium/NativeMessagingHosts/com.pi.annotate.json`
+- macOS Google Chrome: `cat ~/Library/Application\ Support/Google/Chrome/NativeMessagingHosts/com.claude.annotate.json`
+- macOS Google Chrome for Testing: `cat ~/Library/Application\ Support/Google/ChromeForTesting/NativeMessagingHosts/com.claude.annotate.json`
+- macOS Chromium: `cat ~/Library/Application\ Support/Chromium/NativeMessagingHosts/com.claude.annotate.json`
+- Linux Google Chrome (default path): `cat ~/.config/google-chrome/NativeMessagingHosts/com.claude.annotate.json`
+- Linux Google Chrome for Testing (default path): `cat ~/.config/google-chrome-for-testing/NativeMessagingHosts/com.claude.annotate.json`
+- Linux Chromium (default path): `cat ~/.config/chromium/NativeMessagingHosts/com.claude.annotate.json`
 - Linux with custom config home: `echo "${CHROME_CONFIG_HOME:-${XDG_CONFIG_HOME:-$HOME/.config}}"`
 
 If your Linux browser uses a different XDG config root, export `CHROME_CONFIG_HOME` or `XDG_CONFIG_HOME` before running `./install.sh <extension-id>`. Custom `--user-data-dir` layouts are not handled by this installer.

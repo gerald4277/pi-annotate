@@ -5,12 +5,12 @@ import { z } from "zod";
 import { HostSocket } from "./socket.js";
 import { runAnnotate } from "./handler.js";
 
-const SOCKET_PATH = process.env.PI_ANNOTATE_SOCKET ?? "/tmp/pi-annotate.sock";
-const TOKEN_PATH = process.env.PI_ANNOTATE_TOKEN ?? "/tmp/pi-annotate.token";
+const SOCKET_PATH = process.env.CLAUDE_ANNOTATE_SOCKET ?? "/tmp/claude-annotate.sock";
+const TOKEN_PATH = process.env.CLAUDE_ANNOTATE_TOKEN ?? "/tmp/claude-annotate.token";
 
 const socket = new HostSocket({ socketPath: SOCKET_PATH, tokenPath: TOKEN_PATH });
 
-const server = new McpServer({ name: "pi-annotate", version: "0.1.0" });
+const server = new McpServer({ name: "claude-annotate", version: "0.1.0" });
 
 server.tool(
   "annotate",
@@ -43,10 +43,10 @@ server.tool(
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  process.stderr.write("[pi-annotate] MCP server ready on stdio\n");
+  process.stderr.write("[claude-annotate] MCP server ready on stdio\n");
 }
 
 main().catch((err) => {
-  process.stderr.write(`[pi-annotate] fatal: ${err instanceof Error ? err.stack : String(err)}\n`);
+  process.stderr.write(`[claude-annotate] fatal: ${err instanceof Error ? err.stack : String(err)}\n`);
   process.exit(1);
 });

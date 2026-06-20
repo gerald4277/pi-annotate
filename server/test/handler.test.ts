@@ -11,7 +11,7 @@ const PNG_B64 =
 const PNG_DATA_URL = `data:image/png;base64,${PNG_B64}`;
 
 function mkTmp(): string {
-  return fs.mkdtempSync(path.join(os.tmpdir(), "pi-annotate-h-"));
+  return fs.mkdtempSync(path.join(os.tmpdir(), "claude-annotate-h-"));
 }
 
 describe("runAnnotate", () => {

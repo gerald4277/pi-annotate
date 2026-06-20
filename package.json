@@ -1,18 +1,18 @@
 {
-  "name": "pi-annotate",
+  "name": "claude-annotate",
   "version": "0.4.3",
-  "description": "Visual annotation tool for Pi coding agent with inline note cards",
+  "description": "Visual annotation tool for Claude Code with inline note cards",
   "type": "module",
   "author": "Nico Bailon",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nicobailon/pi-annotate.git"
+    "url": "git+https://github.com/nicobailon/claude-annotate.git"
   },
   "bugs": {
-    "url": "https://github.com/nicobailon/pi-annotate/issues"
+    "url": "https://github.com/nicobailon/claude-annotate/issues"
   },
-  "homepage": "https://github.com/nicobailon/pi-annotate#readme",
+  "homepage": "https://github.com/nicobailon/claude-annotate#readme",
   "dependencies": {
     "typebox": "^1.1.24"
   },
@@ -39,6 +39,6 @@
     "extensions": [
       "./index.ts"
     ],
-    "video": "https://github.com/nicobailon/pi-annotate/raw/refs/heads/main/demo.mp4"
+    "video": "https://github.com/nicobailon/claude-annotate/raw/refs/heads/main/demo.mp4"
   }
 }

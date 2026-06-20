@@ -1,5 +1,5 @@
 /**
- * Pi Annotate - Content Script (v0.4.0)
+ * Claude Annotate - Content Script (v0.4.0)
  * 
  * DevTools-like element picker with inline note cards:
  * - Hover to highlight elements
@@ -40,7 +40,7 @@
       .replace(/'/g, "&#039;");
   }
   
-  // Check if element is part of pi-annotate UI (by id or class)
+  // Check if element is part of claude-annotate UI (by id or class)
   function isPiElement(el) {
     if (!el) return false;
     if (el.id?.startsWith("pi-")) return true;
@@ -665,7 +665,7 @@
   // ─────────────────────────────────────────────────────────────────────
   
   chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-    console.log("[pi-annotate] Received:", msg.type);
+    console.log("[claude-annotate] Received:", msg.type);
     
     if (msg.type === "START_ANNOTATION") {
       requestId = msg.requestId || msg.id || null;
@@ -689,7 +689,7 @@
   
   function activate() {
     if (isActive) {
-      console.log("[pi-annotate] Restarting session (new request)");
+      console.log("[claude-annotate] Restarting session (new request)");
       resetState();
       return;
     }
@@ -718,7 +718,7 @@
     initDragHandlers();
     
     document.body.style.cursor = "crosshair";
-    console.log("[pi-annotate] Activated");
+    console.log("[claude-annotate] Activated");
   }
   
   function resetState() {
@@ -790,7 +790,7 @@
     const countEl = document.getElementById("pi-count");
     if (countEl) countEl.textContent = "0 selected";
     
-    console.log("[pi-annotate] State reset for new session");
+    console.log("[claude-annotate] State reset for new session");
   }
   
   function deactivate() {
@@ -843,7 +843,7 @@
     etchChildListMutations = [];
     etchChangeCount = 0;
     
-    console.log("[pi-annotate] Deactivated");
+    console.log("[claude-annotate] Deactivated");
   }
   
   // ─────────────────────────────────────────────────────────────────────
@@ -1301,17 +1301,17 @@
     const parent = sel.element.parentElement;
     if (parent && parent !== document.body && parent !== document.documentElement) {
       if (isPiElement(parent)) {
-        console.log("[pi-annotate] Cannot expand to pi-annotate UI element");
+        console.log("[claude-annotate] Cannot expand to claude-annotate UI element");
         return;
       }
       
-      console.log("[pi-annotate] Expanding to parent:", parent.tagName);
+      console.log("[claude-annotate] Expanding to parent:", parent.tagName);
       selectedElements[index] = createSelectionData(parent);
       updateNoteCardLabel(index);
       updateBadges();
       updateConnectors();
     } else {
-      console.log("[pi-annotate] Already at root - no valid parent");
+      console.log("[claude-annotate] Already at root - no valid parent");
     }
   }
   
@@ -1324,13 +1324,13 @@
     );
     
     if (children.length > 0) {
-      console.log("[pi-annotate] Contracting to child:", children[0].tagName);
+      console.log("[claude-annotate] Contracting to child:", children[0].tagName);
       selectedElements[index] = createSelectionData(children[0]);
       updateNoteCardLabel(index);
       updateBadges();
       updateConnectors();
     } else {
-      console.log("[pi-annotate] No children to contract to");
+      console.log("[claude-annotate] No children to contract to");
     }
   }
   
@@ -2079,7 +2079,7 @@
       return null;
     }
     
-    // Skip pi-annotate UI elements
+    // Skip claude-annotate UI elements
     while (parent && isPiElement(parent)) {
       parent = parent.parentElement;
     }
@@ -2353,7 +2353,7 @@
 
     for (let si = 0; si < document.styleSheets.length; si++) {
       const sheet = document.styleSheets[si];
-      // Skip pi-annotate's own injected styles
+      // Skip claude-annotate's own injected styles
       if (sheet.ownerNode?.id === "pi-styles") continue;
 
       try {
@@ -2767,7 +2767,7 @@
 
     for (let si = 0; si < document.styleSheets.length; si++) {
       const sheet = document.styleSheets[si];
-      // Skip sheets not in the snapshot (added by JS after recording started, or pi-annotate's own)
+      // Skip sheets not in the snapshot (added by JS after recording started, or claude-annotate's own)
       if (!rulesByNode.has(sheet.ownerNode)) continue;
 
       try {
@@ -2979,7 +2979,7 @@
           }
         }
       } catch (err) {
-        console.error("[pi-annotate] Screenshot failed:", err);
+        console.error("[claude-annotate] Screenshot failed:", err);
       }
     }
 
@@ -3022,7 +3022,7 @@
           warnings: warnings.length > 0 ? warnings : undefined,
         };
       } catch (err) {
-        console.error("[pi-annotate] Edit capture failed:", err);
+        console.error("[claude-annotate] Edit capture failed:", err);
       }
     }
     
@@ -3055,9 +3055,9 @@
         reason: "user",
       });
     } catch (e) {
-      console.log("[pi-annotate] Could not send cancel (no connection)");
+      console.log("[claude-annotate] Could not send cancel (no connection)");
     }
   }
   
-  console.log("[pi-annotate] Content script ready (v0.4.0)");
+  console.log("[claude-annotate] Content script ready (v0.4.0)");
 })();

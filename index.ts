@@ -6,8 +6,8 @@ import * as path from "node:path";
 import * as os from "node:os";
 import type { AnnotationResult, ElementSelection, EditCapture } from "./types.js";
 
-const SOCKET_PATH = "/tmp/pi-annotate.sock";
-const TOKEN_PATH = "/tmp/pi-annotate.token";
+const SOCKET_PATH = "/tmp/claude-annotate.sock";
+const TOKEN_PATH = "/tmp/claude-annotate.token";
 const MAX_SOCKET_BUFFER = 32 * 1024 * 1024; // 32MB (increased from 8MB for edit capture payloads)
 const MAX_SCREENSHOT_BYTES = 15 * 1024 * 1024; // 15MB
 
@@ -28,7 +28,7 @@ export default function (pi: ExtensionAPI) {
   
   function setStatus(message: string) {
     if (currentCtx?.ui?.setStatus) {
-      currentCtx.ui.setStatus("pi-annotate", message);
+      currentCtx.ui.setStatus("claude-annotate", message);
     }
   }
   
@@ -44,7 +44,7 @@ export default function (pi: ExtensionAPI) {
       await connectToHost();
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
-      ctx.ui?.notify(`Browser extension not connected. ${message}. Click the Pi Annotate icon in the browser to wake the service worker, then retry.`, "error");
+      ctx.ui?.notify(`Browser extension not connected. ${message}. Click the Claude Annotate icon in the browser to wake the service worker, then retry.`, "error");
       return;
     }
     
@@ -407,7 +407,7 @@ export default function (pi: ExtensionAPI) {
       // Full page screenshot
       try {
         if (!result.screenshot.startsWith("data:image/")) throw new Error("Invalid screenshot data");
-        const screenshotPath = path.join(os.tmpdir(), `pi-annotate-${timestamp}-full.png`);
+        const screenshotPath = path.join(os.tmpdir(), `claude-annotate-${timestamp}-full.png`);
         const base64Data = result.screenshot.replace(/^data:image\/\w+;base64,/, "");
         const buffer = Buffer.from(base64Data, "base64");
         if (buffer.length > MAX_SCREENSHOT_BYTES) throw new Error("Screenshot too large");
@@ -426,7 +426,7 @@ export default function (pi: ExtensionAPI) {
         try {
           if (!shot?.dataUrl?.startsWith("data:image/")) throw new Error("Invalid screenshot data");
           const safeIndex = Number.isFinite(shot.index) ? Math.max(1, Math.floor(shot.index)) : i + 1;
-          const screenshotPath = path.join(os.tmpdir(), `pi-annotate-${timestamp}-el${safeIndex}.png`);
+          const screenshotPath = path.join(os.tmpdir(), `claude-annotate-${timestamp}-el${safeIndex}.png`);
           const base64Data = shot.dataUrl.replace(/^data:image\/\w+;base64,/, "");
           const buffer = Buffer.from(base64Data, "base64");
           if (buffer.length > MAX_SCREENSHOT_BYTES) throw new Error("Screenshot too large");
@@ -450,7 +450,7 @@ export default function (pi: ExtensionAPI) {
         output += `### Before/After Screenshots\n\n`;
         if (ec.beforeScreenshot) {
           try {
-            const p = path.join(os.tmpdir(), `pi-annotate-${timestamp}-before.png`);
+            const p = path.join(os.tmpdir(), `claude-annotate-${timestamp}-before.png`);
             const buf = Buffer.from(ec.beforeScreenshot.replace(/^data:image\/\w+;base64,/, ""), "base64");
             if (buf.length > MAX_SCREENSHOT_BYTES) throw new Error("Screenshot too large");
             await fs.promises.writeFile(p, buf);
@@ -462,7 +462,7 @@ export default function (pi: ExtensionAPI) {
         }
         if (ec.afterScreenshot) {
           try {
-            const p = path.join(os.tmpdir(), `pi-annotate-${timestamp}-after.png`);
+            const p = path.join(os.tmpdir(), `claude-annotate-${timestamp}-after.png`);
             const buf = Buffer.from(ec.afterScreenshot.replace(/^data:image\/\w+;base64,/, ""), "base64");
             if (buf.length > MAX_SCREENSHOT_BYTES) throw new Error("Screenshot too large");
             await fs.promises.writeFile(p, buf);
@@ -513,7 +513,7 @@ export default function (pi: ExtensionAPI) {
       } catch (err) {
         const message = err instanceof Error ? err.message : String(err);
         return {
-          content: [{ type: "text", text: "Browser extension not connected. Click the Pi Annotate icon in the browser to wake the service worker, then retry." }],
+          content: [{ type: "text", text: "Browser extension not connected. Click the Claude Annotate icon in the browser to wake the service worker, then retry." }],
           details: { error: message },
         };
       }

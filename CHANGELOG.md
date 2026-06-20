@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to Pi Annotate.
+All notable changes to Claude Annotate.
 
 ## [Unreleased]
 
@@ -78,7 +78,7 @@ All notable changes to Pi Annotate.
 - **Debug re-capture at submit** — When debug mode is on at submit time, re-captures computed styles, parent context, and CSS variables for ALL selected elements (fixes elements selected before debug was enabled)
 
 ### Changed
-- **README rewritten for `pi install`** — Quick Start now uses `pi install github.com/nicobailon/pi-annotate`, paths updated to `~/.pi/agent/git/pi-annotate/`
+- **README rewritten for `pi install`** — Quick Start now uses `pi install github.com/nicobailon/claude-annotate`, paths updated to `~/.pi/agent/git/claude-annotate/`
 - **Key styles suppressed in debug mode** — Compact `**Styles:**` line hidden when full `**Computed Styles:**` dump is present (no duplication)
 - **Default style filtering** — `fontSize: 16px` and `fontWeight: 400` filtered from key styles to reduce noise
 
@@ -134,11 +134,11 @@ All notable changes to Pi Annotate.
 - **CSS custom properties** — 22 `--pi-*` variables for consistent theming aligned with pi interview tool
 - **Element bounding boxes** — Selected elements now show visible outline rectangles
 - **Expand/Contract buttons** — ▲/▼ buttons in note card headers to navigate parent/child elements
-- **`isPiElement()` helper** — Top-level function to detect pi-annotate UI elements
+- **`isPiElement()` helper** — Top-level function to detect claude-annotate UI elements
 - **`updateNoteCardLabel()` helper** — Reusable function for updating note card selectors
 
 ### Changed
-- **Status updates** — Replaced `console.log` with `ctx.ui.setStatus("pi-annotate", message)` for proper pi integration
+- **Status updates** — Replaced `console.log` with `ctx.ui.setStatus("claude-annotate", message)` for proper pi integration
 - **Screenshot toggle labels** — Changed from `Each|Full|None` to `Screenshot: Crop|Full|None` for clarity
 - **Notes visibility toggle** — Replaced two buttons (▼▲) with single checkbox `☑ Notes`
 - **Camera button styling** — Now shows clear on/off state (40% opacity when off, green glow when on)
@@ -212,7 +212,7 @@ All notable changes to Pi Annotate.
 ## [0.1.2] - 2026-01-27
 
 ### Security
-- **Auth token** — Native host generates per-run token at `/tmp/pi-annotate.token`; Pi must authenticate before messages are forwarded
+- **Auth token** — Native host generates per-run token at `/tmp/claude-annotate.token`; Pi must authenticate before messages are forwarded
 - **Socket permissions** — Socket file created with 0600 permissions, token file with 0600
 - **Message validation** — Schema guardrails in index.ts drop malformed messages
 

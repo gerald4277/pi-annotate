@@ -1,5 +1,5 @@
 /**
- * Pi Annotate - Background Service Worker
+ * Claude Annotate - Background Service Worker
  * 
  * Connects to native messaging host and forwards messages between
  * the native host (Pi) and content scripts.
@@ -67,13 +67,13 @@ function pingNative() {
 
 function sendToNative(msg) {
   if (!nativePort) {
-    console.error("[pi-annotate] Cannot send to native host - not connected");
+    console.error("[claude-annotate] Cannot send to native host - not connected");
     return;
   }
   try {
     nativePort.postMessage(msg);
   } catch (err) {
-    console.error("[pi-annotate] Failed to send to native host:", err);
+    console.error("[claude-annotate] Failed to send to native host:", err);
   }
 }
 
@@ -82,7 +82,7 @@ async function sendToContentScript(tabId, msg) {
   try {
     await chrome.tabs.sendMessage(tabId, msg);
   } catch (err) {
-    console.log("[pi-annotate] Content script not found, injecting...");
+    console.log("[claude-annotate] Content script not found, injecting...");
     try {
       await chrome.scripting.executeScript({
         target: { tabId },
@@ -91,7 +91,7 @@ async function sendToContentScript(tabId, msg) {
       await new Promise(r => setTimeout(r, 100));
       await chrome.tabs.sendMessage(tabId, msg);
     } catch (injectErr) {
-      console.error("[pi-annotate] Failed to inject:", injectErr.message);
+      console.error("[claude-annotate] Failed to inject:", injectErr.message);
       const requestId = getRequestId(msg);
       if (requestId) {
         requestTabs.delete(requestId);
@@ -118,7 +118,7 @@ function injectAfterLoad(tabId, msg, requestId) {
 
   timeoutId = setTimeout(() => {
     chrome.tabs.onUpdated.removeListener(listener);
-    console.log("[pi-annotate] Navigation timeout - listener removed");
+    console.log("[claude-annotate] Navigation timeout - listener removed");
     if (requestId) {
       requestTabs.delete(requestId);
       sendToNative({ type: "CANCEL", requestId, reason: "navigation_timeout" });
@@ -131,20 +131,20 @@ async function togglePicker() {
   try {
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     if (!tab?.id || isRestrictedUrl(tab.url)) {
-      console.log("[pi-annotate] Cannot toggle picker: no valid tab");
+      console.log("[claude-annotate] Cannot toggle picker: no valid tab");
       return;
     }
     await sendToContentScript(tab.id, { type: "TOGGLE_PICKER" });
   } catch (err) {
-    console.error("[pi-annotate] Toggle picker failed:", err);
+    console.error("[claude-annotate] Toggle picker failed:", err);
   }
 }
 
 function connectNative() {
   if (nativePort) return;
 
-  console.log("[pi-annotate] Connecting to native host...");
-  const port = chrome.runtime.connectNative("com.pi.annotate");
+  console.log("[claude-annotate] Connecting to native host...");
+  const port = chrome.runtime.connectNative("com.claude.annotate");
   nativePort = port;
   
   port.onMessage.addListener((msg) => {
@@ -154,11 +154,11 @@ function connectNative() {
       return;
     }
 
-    console.log("[pi-annotate] From native host:", msg);
+    console.log("[claude-annotate] From native host:", msg);
     
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       if (!tabs[0]?.id) {
-        console.log("[pi-annotate] No active tab found");
+        console.log("[claude-annotate] No active tab found");
         const requestId = getRequestId(msg);
         if (requestId) {
           sendToNative({ type: "CANCEL", requestId, reason: "No active browser tab found" });
@@ -175,20 +175,20 @@ function connectNative() {
 
         if (msg.url && (restricted || currentUrl !== msg.url)) {
           if (restricted) {
-            console.log("[pi-annotate] Opening new tab:", msg.url);
+            console.log("[claude-annotate] Opening new tab:", msg.url);
             chrome.tabs.create({ url: msg.url }, (tab) => {
               if (chrome.runtime.lastError) {
-                console.error("[pi-annotate] Failed to create tab:", chrome.runtime.lastError.message);
+                console.error("[claude-annotate] Failed to create tab:", chrome.runtime.lastError.message);
                 sendToNative({ type: "CANCEL", requestId, reason: chrome.runtime.lastError.message });
                 return;
               }
               injectAfterLoad(tab.id, msg, requestId);
             });
           } else {
-            console.log("[pi-annotate] Navigating to:", msg.url);
+            console.log("[claude-annotate] Navigating to:", msg.url);
             chrome.tabs.update(tabId, { url: msg.url }, (tab) => {
               if (chrome.runtime.lastError) {
-                console.error("[pi-annotate] Failed to navigate:", chrome.runtime.lastError.message);
+                console.error("[claude-annotate] Failed to navigate:", chrome.runtime.lastError.message);
                 sendToNative({ type: "CANCEL", requestId, reason: chrome.runtime.lastError.message });
                 return;
               }
@@ -196,12 +196,12 @@ function connectNative() {
             });
           }
         } else if (restricted) {
-          console.log("[pi-annotate] Cannot annotate restricted tab:", currentUrl);
+          console.log("[claude-annotate] Cannot annotate restricted tab:", currentUrl);
           if (requestId) {
             sendToNative({ type: "CANCEL", requestId, reason: "Current tab cannot be annotated (restricted URL). Provide a URL." });
           }
         } else {
-          console.log("[pi-annotate] Activating on current tab:", currentUrl);
+          console.log("[claude-annotate] Activating on current tab:", currentUrl);
           if (requestId) requestTabs.set(requestId, tabId);
           sendToContentScript(tabId, msg);
         }
@@ -213,7 +213,7 @@ function connectNative() {
   
   port.onDisconnect.addListener(() => {
     const error = chrome.runtime.lastError?.message || "Native host disconnected unexpectedly";
-    console.log("[pi-annotate] Native host disconnected", error);
+    console.log("[claude-annotate] Native host disconnected", error);
     lastNativeDisconnectError = error;
     resolvePendingPing({ connected: false, error });
     if (nativePort === port) {
@@ -225,7 +225,7 @@ function connectNative() {
 
 // Handle messages from content script and popup
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-  console.log("[pi-annotate] Message:", msg.type);
+  console.log("[claude-annotate] Message:", msg.type);
   
   if (msg.type === "CHECK_CONNECTION") {
     pingNative().then(sendResponse);
@@ -241,16 +241,16 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   
   if (msg.type === "CAPTURE_SCREENSHOT") {
     if (!sender.tab?.windowId) {
-      console.log("[pi-annotate] Screenshot failed: No window ID");
+      console.log("[claude-annotate] Screenshot failed: No window ID");
       sendResponse({ error: "No window ID" });
       return true;
     }
     chrome.tabs.captureVisibleTab(sender.tab.windowId, { format: "png" }, (dataUrl) => {
       if (chrome.runtime.lastError) {
-        console.log("[pi-annotate] Screenshot error:", chrome.runtime.lastError.message);
+        console.log("[claude-annotate] Screenshot error:", chrome.runtime.lastError.message);
         sendResponse({ error: chrome.runtime.lastError.message });
       } else {
-        console.log("[pi-annotate] Screenshot captured, size:", dataUrl?.length || 0);
+        console.log("[claude-annotate] Screenshot captured, size:", dataUrl?.length || 0);
         sendResponse({ dataUrl });
       }
     });
@@ -259,7 +259,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   
   if (["ANNOTATIONS_COMPLETE", "CANCEL"].includes(msg.type)) {
     if (requestId) requestTabs.delete(requestId);
-    console.log("[pi-annotate] Forwarding to native host:", msg.type);
+    console.log("[claude-annotate] Forwarding to native host:", msg.type);
     sendToNative(msg);
   }
 });
@@ -273,4 +273,4 @@ chrome.commands.onCommand.addListener((command) => {
 
 // Connect on startup
 connectNative();
-console.log("[pi-annotate] Background script loaded");
+console.log("[claude-annotate] Background script loaded");

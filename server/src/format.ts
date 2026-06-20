@@ -234,7 +234,7 @@ export async function formatResult(
   if (result.screenshot) {
     // Full page screenshot
     try {
-      const screenshotPath = path.join(tmpDir, `pi-annotate-${timestamp}-full.png`);
+      const screenshotPath = path.join(tmpDir, `claude-annotate-${timestamp}-full.png`);
       writeScreenshot(result.screenshot, screenshotPath, images);
       output += `**Screenshot (full page):** ${screenshotPath}\n`;
     } catch (err) {
@@ -249,7 +249,7 @@ export async function formatResult(
       const shot = result.screenshots[i];
       try {
         const safeIndex = Number.isFinite(shot.index) ? Math.max(1, Math.floor(shot.index)) : i + 1;
-        const screenshotPath = path.join(tmpDir, `pi-annotate-${timestamp}-el${safeIndex}.png`);
+        const screenshotPath = path.join(tmpDir, `claude-annotate-${timestamp}-el${safeIndex}.png`);
         writeScreenshot(shot?.dataUrl, screenshotPath, images);
         output += `- Element ${safeIndex}: ${screenshotPath}\n`;
       } catch (err) {
@@ -270,7 +270,7 @@ export async function formatResult(
       output += `### Before/After Screenshots\n\n`;
       if (ec.beforeScreenshot) {
         try {
-          const p = path.join(tmpDir, `pi-annotate-${timestamp}-before.png`);
+          const p = path.join(tmpDir, `claude-annotate-${timestamp}-before.png`);
           writeScreenshot(ec.beforeScreenshot, p, images);
           output += `- Before: ${p}\n`;
         } catch (err) {
@@ -280,7 +280,7 @@ export async function formatResult(
       }
       if (ec.afterScreenshot) {
         try {
-          const p = path.join(tmpDir, `pi-annotate-${timestamp}-after.png`);
+          const p = path.join(tmpDir, `claude-annotate-${timestamp}-after.png`);
           writeScreenshot(ec.afterScreenshot, p, images);
           output += `- After: ${p}\n`;
         } catch (err) {

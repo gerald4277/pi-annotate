@@ -27,7 +27,7 @@ export interface AnnotateOutput {
 
 const NOT_CONNECTED =
   "Browser extension not connected. Load the chrome-extension/ folder in Chrome, run " +
-  "chrome-extension/native/install.sh <extension-id>, click the Pi Annotate icon to wake the " +
+  "chrome-extension/native/install.sh <extension-id>, click the Claude Annotate icon to wake the " +
   "service worker, then retry.";
 
 /**

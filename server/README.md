@@ -1,13 +1,13 @@
-# pi-annotate-mcp
+# claude-annotate-mcp
 
-Claude Code MCP server for [pi-annotate](https://github.com/nicobailon/pi-annotate)'s browser
+Claude Code MCP server for [claude-annotate](https://github.com/nicobailon/claude-annotate)'s browser
 visual-annotation workflow. Drop-in replacement for the Pi extension layer: it speaks the same
 Unix-socket protocol to the unchanged Chrome extension + native host, and exposes a single
 `annotate` MCP tool to Claude Code.
 
 ```
 Chrome extension ──native msg──> host.cjs ──unix socket──> [this] MCP server ──stdio──> Claude Code
-   (unchanged)                   (unchanged)   /tmp/pi-annotate.sock      annotate tool
+   (unchanged)                   (unchanged)   /tmp/claude-annotate.sock      annotate tool
 ```
 
 ## How it works
@@ -35,7 +35,7 @@ OS temp dir.
    Restart the browser.
 4. **Register with Claude Code**
    ```bash
-   claude mcp add pi-annotate -- node /absolute/path/to/server/dist/index.js
+   claude mcp add claude-annotate -- node /absolute/path/to/server/dist/index.js
    ```
 5. Restart Claude Code. The `annotate` tool is now available.
 
@@ -53,8 +53,8 @@ tool timeout, if shorter, aborts the call cleanly (a `CANCEL` is sent to the hos
 
 Override socket/token paths via env (mainly for testing):
 
-- `PI_ANNOTATE_SOCKET` (default `/tmp/pi-annotate.sock`)
-- `PI_ANNOTATE_TOKEN` (default `/tmp/pi-annotate.token`)
+- `PI_ANNOTATE_SOCKET` (default `/tmp/claude-annotate.sock`)
+- `PI_ANNOTATE_TOKEN` (default `/tmp/claude-annotate.token`)
 
 ## Develop / test
 

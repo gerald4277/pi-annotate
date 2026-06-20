@@ -2,9 +2,9 @@
 const net = require("net");
 const fs = require("fs");
 
-const SOCKET_PATH = "/tmp/pi-annotate.sock";
-const TOKEN_PATH = "/tmp/pi-annotate.token";
-const LOG_FILE = "/tmp/pi-annotate-host.log";
+const SOCKET_PATH = "/tmp/claude-annotate.sock";
+const TOKEN_PATH = "/tmp/claude-annotate.token";
+const LOG_FILE = "/tmp/claude-annotate-host.log";
 const MAX_NATIVE_MESSAGE_BYTES = 32 * 1024 * 1024; // 32MB (increased from 8MB for edit capture payloads)
 const MAX_SOCKET_BUFFER = 32 * 1024 * 1024; // 32MB
 const MAX_LOG_BYTES = 5 * 1024 * 1024; // 5MB

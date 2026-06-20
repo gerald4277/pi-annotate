@@ -54,8 +54,8 @@ describe("end-to-end: built binary over stdio", () => {
     const child = spawn("node", [BIN], {
       env: {
         ...process.env,
-        PI_ANNOTATE_SOCKET: h.socketPath,
-        PI_ANNOTATE_TOKEN: h.tokenPath,
+        CLAUDE_ANNOTATE_SOCKET: h.socketPath,
+        CLAUDE_ANNOTATE_TOKEN: h.tokenPath,
       },
     }) as ChildProcessWithoutNullStreams;
 
@@ -67,7 +67,7 @@ describe("end-to-end: built binary over stdio", () => {
         capabilities: {},
         clientInfo: { name: "smoke", version: "0" },
       });
-      expect(init.result.serverInfo.name).toBe("pi-annotate");
+      expect(init.result.serverInfo.name).toBe("claude-annotate");
 
       rpc.notify("notifications/initialized");
 

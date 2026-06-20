@@ -8,7 +8,7 @@ import type { AnnotationResult } from "../src/types.js";
 const TS = 1234567890;
 
 function tmpDir(): string {
-  return fs.mkdtempSync(path.join(os.tmpdir(), "pi-annotate-test-"));
+  return fs.mkdtempSync(path.join(os.tmpdir(), "claude-annotate-test-"));
 }
 
 // 1x1 transparent PNG
@@ -156,7 +156,7 @@ describe("formatResult — screenshots", () => {
       screenshots: [{ index: 1, dataUrl: PNG_DATA_URL }],
     };
     const { text, images } = await formatResult(r, { timestamp: TS, tmpDir: dir });
-    const expectedPath = path.join(dir, `pi-annotate-${TS}-el1.png`);
+    const expectedPath = path.join(dir, `claude-annotate-${TS}-el1.png`);
     expect(fs.existsSync(expectedPath)).toBe(true);
     expect(text).toContain(`Element 1: ${expectedPath}`);
     expect(images).toEqual([{ path: expectedPath, base64: PNG_B64, mime: "image/png" }]);
@@ -171,7 +171,7 @@ describe("formatResult — screenshots", () => {
       screenshot: PNG_DATA_URL,
     };
     const { text, images } = await formatResult(r, { timestamp: TS, tmpDir: dir });
-    const expectedPath = path.join(dir, `pi-annotate-${TS}-full.png`);
+    const expectedPath = path.join(dir, `claude-annotate-${TS}-full.png`);
     expect(fs.existsSync(expectedPath)).toBe(true);
     expect(text).toContain(`**Screenshot (full page):** ${expectedPath}`);
     expect(images).toContainEqual({ path: expectedPath, base64: PNG_B64, mime: "image/png" });
