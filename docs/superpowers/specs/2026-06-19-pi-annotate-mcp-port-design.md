@@ -62,7 +62,7 @@ Port `formatResult` + `formatEditCapture` (lines 228–480) **verbatim** — the
 ### 3. Tool registration (`index.ts` of server)
 Replaces `pi.registerTool` (lines 486–579) with an MCP tool:
 - Name `annotate`; same description/promptSnippet text.
-- Params via **zod** (MCP SDK convention) instead of typebox: `{ url?: string, timeout?: number = 300 }`.
+- Params via **zod** (MCP SDK convention) instead of typebox: `{ url?: string, timeout?: number = 600 }`. (Raised from the original's 300 s — it is only a max-wait ceiling; the wired abort path means Claude Code's own tool timeout, if lower, still ends the call cleanly.)
 - Handler:
   1. `await connect()` (lazy). On failure → MCP error result with the actionable message above.
   2. `requestId = Date.now()` (standalone Node — no workflow `Date.now()` restriction applies).
@@ -92,7 +92,7 @@ Replaces `pi.registerTool` (lines 486–579) with an MCP tool:
 |------|----------|
 | Token file missing / socket absent | Lazy-connect fails → actionable "host not running" error result. |
 | Socket buffer overflow (>32 MB) | Destroy socket; pending → `connection_lost`. |
-| Timeout (default 300 s) | Send `CANCEL{reason:timeout}`; return "timed out after Ns". |
+| Timeout (default 600 s) | Send `CANCEL{reason:timeout}`; return "timed out after Ns". |
 | Client/tool abort | Send `CANCEL{reason:aborted}`; return "aborted". |
 | User cancels in browser | `CANCEL` → "Annotation cancelled by user." |
 | Another terminal takes over | `SESSION_REPLACED` → "Annotation session ended: <reason>". |
