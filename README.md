@@ -19,7 +19,21 @@ Click elements, add comments, submit. The agent gets selectors, box model, acces
 
 https://github.com/user-attachments/assets/115b10ca-86e8-4b1c-b8a4-492c68759c58
 
-## Quick Start
+> **Fork note — Claude Code support.** This fork adds an MCP server in [`server/`](server/) that brings the same annotation workflow to **[Claude Code](https://claude.com/claude-code)**. The Chrome extension and native host are reused unchanged — only the agent layer differs. Upstream: [nicobailon/pi-annotate](https://github.com/nicobailon/pi-annotate).
+
+## Claude Code (MCP)
+
+```bash
+cd server
+npm install && npm run build
+# Load chrome-extension/ in Chrome (Developer Mode), note the extension ID, then:
+( cd ../chrome-extension/native && ./install.sh <extension-id> )   # restart browser
+claude mcp add pi-annotate -- node "$PWD/dist/index.js"            # restart Claude Code
+```
+
+Then ask Claude to **annotate** a page — it calls the `annotate` tool, you click/comment in the browser, and Claude receives selectors, box model, accessibility, your comments, and screenshots (returned both inline and as temp files). Default wait is 600s. Full setup, config, and tests: **[server/README.md](server/README.md)**.
+
+## Quick Start (Pi)
 
 ### 1. Install Pi Extension
 
@@ -154,6 +168,8 @@ Browser Extension (background.js → content.js)
 | `chrome-extension/popup.html` | Connection status + setup |
 
 Auth token generated per-run at `/tmp/pi-annotate.token`. Socket and token files use 0600 permissions.
+
+**Claude Code variant:** the [`server/`](server/) MCP server replaces the Pi extension at the top of this stack — it speaks the same Unix-socket protocol to the unchanged native host, so the bottom two layers are identical. See [server/README.md](server/README.md).
 
 ## Development
 
